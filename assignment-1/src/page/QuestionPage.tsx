@@ -5,6 +5,7 @@ import { questionSet } from '../GlobalData';
 import { Button } from '@mui/material';
 import AddQuestionModal from '../component/Question/AddQuestionModal/AddQuestionModal';
 import { questionString } from '../model/Question';
+import QuestionValidator from '../model/QuestionValidator';
 
 const QuestionPage = () => {
 
@@ -32,7 +33,13 @@ const QuestionPage = () => {
       categories: newCategories,
       link: newLink
     };
-    //TODO Validation
+
+    // Invalid question string guard clause
+    let validator = new QuestionValidator();
+    if (!validator.validate(newQnStr)) {
+      return;
+    }
+
     setQuestions(arr => [...arr, newQnStr]);
     setModalIsVisible(false);
   }
