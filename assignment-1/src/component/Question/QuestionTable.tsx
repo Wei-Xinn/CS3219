@@ -1,14 +1,6 @@
-import Question from "../../model/Question";
+import { Question, questionString } from "../../model/Question";
 import { useEffect, useState } from "react";
 import './QuestionTable.css'
-
-interface questionString {
-  id: string,
-  title: string,
-  complexity: string,
-  categories: string,
-  link: string
-}
 
 interface Props {
   data: questionString[]

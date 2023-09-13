@@ -10,6 +10,14 @@ enum Complexity {
   "Hard"
 }
 
+interface questionString {
+  id: string,
+  title: string,
+  complexity: string,
+  categories: string,
+  link: string
+}
+
 function parseCategories(inputString: string) {
   return inputString.split(',')
     .map((c) => Category[c.trim() as keyof typeof Category]);
@@ -44,4 +52,6 @@ class Question {
 
 }
 
-export default Question;
+export { Question, Category, Complexity };
+export type { questionString };
+
