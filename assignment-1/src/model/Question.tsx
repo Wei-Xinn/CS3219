@@ -1,11 +1,22 @@
-type Category = string;
-
-// Refactor Complexity
+enum Category {
+  "Strings",
+  "Data Structures",
+  "Algorithms"
+}
 
 enum Complexity {
-  Easy,
-  Medium,
-  Hard
+  "Easy",
+  "Medium",
+  "Hard"
+}
+
+function parseCategories(inputString: string) {
+  return inputString.split(',')
+    .map((c) => Category[c.trim() as keyof typeof Category]);
+}
+
+function parseComplexity(inputString: string) {
+  return Complexity[inputString as keyof typeof Complexity];
 }
 
 class Question {
@@ -14,13 +25,23 @@ class Question {
   categories: Category[];
   complexity: Complexity;
   link: string;
-  constructor(id: Number, title: string, categories: Category[], complexity: Complexity, link: string) {
+
+  constructor(id: Number, title: string, categories: string, complexity: string, link: string) {
     this.id = id;
     this.title = title;
-    this.categories = categories;
-    this.complexity = complexity;
+    this.categories = parseCategories(categories);
+    this.complexity = parseComplexity(complexity);
     this.link = link;
   }
+
+  public getCategoriesString() {
+    return this.categories.map((c) => Category[c]).join(', ');
+  }
+
+  public getComplexityString() {
+    return Complexity[this.complexity];
+  }
+
 }
 
-export { Question, Complexity };
+export default Question;

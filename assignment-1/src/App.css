@@ -1,14 +1,4 @@
-.question-table {
-  width: 100%;
-  border: 1px solid;
+.App {
+  background-color: #282c34;
+  text-align: center;
 }
-
-.question-th {
-  text-align: left;
-}
-
-.question-tr:nth-child(even) {
-  background-color: #f2f2f2;
-}
-
-/* add question-tr hover */
