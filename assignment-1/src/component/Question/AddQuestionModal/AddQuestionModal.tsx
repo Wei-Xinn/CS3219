@@ -23,8 +23,6 @@ const AddQuestionModal: React.FC<Props> =
       <Modal
         open={isVisible}
         onClose={() => { }}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
       >
         <Box id='modal-box'>
           <div id='inner-modal-container'>

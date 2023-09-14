@@ -4,6 +4,7 @@ import './QuestionTable.css'
 
 interface Props {
   data: questionString[]
+  viewDescriptionHandler: (id: string) => void;
 }
 
 const headerCell = (label: string) => {
@@ -14,7 +15,7 @@ const bodyCell = (value: string) => {
   return <td className="question-td">{value}</td>
 }
 
-const QuestionTable: React.FC<Props> = ({ data }) => {
+const QuestionTable: React.FC<Props> = ({ data, viewDescriptionHandler }) => {
   const [questionsList, setQuestionsList] = useState<Question[]>([]);
 
   useEffect(() => {
@@ -37,7 +38,7 @@ const QuestionTable: React.FC<Props> = ({ data }) => {
           </tr>
           {questionsList.map((qn: Question, key: number) => {
             return (
-              <tr className="question-tr" key={key} >
+              <tr className="question-tr" key={qn.id.toString()} onClick={(e) => viewDescriptionHandler(qn.id.toString())}>
                 {bodyCell(qn.id.toString())}
                 {bodyCell(qn.title)}
                 {bodyCell(qn.getCategoriesString())}
