@@ -15,6 +15,7 @@ interface questionString {
   title: string,
   complexity: string,
   categories: string,
+  description: string,
   link: string
 }
 
@@ -33,13 +34,15 @@ class Question {
   categories: Category[];
   complexity: Complexity;
   link: string;
+  description: string;
 
-  constructor(id: Number, title: string, categories: string, complexity: string, link: string) {
+  constructor(id: Number, title: string, categories: string, complexity: string, link: string, description: string) {
     this.id = id;
     this.title = title;
     this.categories = parseCategories(categories);
     this.complexity = parseComplexity(complexity);
     this.link = link;
+    this.description = description;
   }
 
   public getCategoriesString() {

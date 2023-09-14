@@ -44,7 +44,9 @@ const ViewDescriptionModal: React.FC<Props> =
             <div id='bottom-row'>
               <Input
                 id='description-input'
-                multiline minRows={20}
+                multiline
+                minRows={20}
+                maxRows={20}
                 fullWidth
                 disabled
                 value={description}

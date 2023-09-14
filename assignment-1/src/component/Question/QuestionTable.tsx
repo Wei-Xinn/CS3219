@@ -21,7 +21,7 @@ const QuestionTable: React.FC<Props> = ({ data, viewDescriptionHandler }) => {
   useEffect(() => {
     const qnArr = data.map((i: questionString) =>
       new Question(parseInt(i.id), i.title, i.categories,
-        i.complexity, i.link));
+        i.complexity, i.link, i.description));
     setQuestionsList(qnArr);
   }, [data])
 

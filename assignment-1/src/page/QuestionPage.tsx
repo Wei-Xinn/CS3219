@@ -1,5 +1,5 @@
 import './QuestionPage.css';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import QuestionTable from '../component/Question/QuestionTable';
 import { questionSet } from '../MockData';
 import { Button } from '@mui/material';
@@ -38,7 +38,8 @@ const QuestionPage = () => {
       title: newTitle,
       complexity: newComplexity,
       categories: newCategories,
-      link: newLink
+      link: newLink,
+      description: newDescription
     };
 
     // Invalid question string guard clause
@@ -65,7 +66,7 @@ const QuestionPage = () => {
     qn.title = (questions.filter(i => i.id === currentQuestionId)[0].title);
     qn.category = (questions.filter(i => i.id === currentQuestionId)[0].categories);
     qn.complexity = (questions.filter(i => i.id === currentQuestionId)[0].complexity);
-    // qn.description = (questions.filter(i => i.id === currentQuestionId)[0].);
+    qn.description = (questions.filter(i => i.id === currentQuestionId)[0].description);
   }
 
   return (
@@ -85,7 +86,7 @@ const QuestionPage = () => {
         title={qn.title}
         category={qn.category}
         complexity={qn.complexity}
-        description='hehe'
+        description={qn.description}
         closeHandler={closeViewModal}
       />
       <div style={{ width: '50%' }}>
