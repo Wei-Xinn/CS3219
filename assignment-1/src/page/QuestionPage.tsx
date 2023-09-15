@@ -7,6 +7,7 @@ import AddQuestionModal from '../component/Question/AddQuestionModal/AddQuestion
 import { questionString } from '../model/Question';
 import QuestionValidator from '../model/QuestionValidator';
 import ViewDescriptionModal from '../component/Question/ViewDescriptionModal/ViewDescriptionModal';
+import LocalStorageHandler from '../handler/LocalStorageHandler';
 
 const QuestionPage = () => {
 
@@ -34,7 +35,7 @@ const QuestionPage = () => {
 
   function submitHandler() {
     const newQnStr = {
-      id: '1',
+      id: '3',
       title: newTitle,
       complexity: newComplexity,
       categories: newCategories,
@@ -47,13 +48,22 @@ const QuestionPage = () => {
     if (!validator.validate(newQnStr)) {
       return;
     }
-
-    setQuestions(arr => [...arr, newQnStr]);
+    const newArr = [...questions, newQnStr];
+    setQuestions(newArr);
     setAddModalIsVisible(false);
+    LocalStorageHandler.saveQuestion(newArr);
+    console.log(newArr);
+    console.log(LocalStorageHandler.loadQuestion());
   }
 
   useEffect(() => {
-    setQuestions(questionSet);
+    console.log(LocalStorageHandler.loadQuestion());
+    if (Object.keys(LocalStorageHandler.loadQuestion()).length === 0) {
+      setQuestions(questionSet);
+      console.log('Loading mock questions')
+      return;
+    }
+    setQuestions(LocalStorageHandler.loadQuestion());
   }, []);
 
   function viewDescriptionHandler(id: string) {
@@ -72,22 +82,15 @@ const QuestionPage = () => {
   return (
     <div id='question-page-container'>
       <AddQuestionModal
-        isVisible={addModalIsVisible}
-        closeHandler={closeAddModal}
-        titleSetter={setNewTitle}
-        linkSetter={setNewLink}
-        categoriesSetter={setNewCategories}
-        complexitySetter={setNewComplexity}
-        descriptionSetter={setNewDescription}
-        submitHandler={submitHandler}
+        isVisible={addModalIsVisible} closeHandler={closeAddModal}
+        titleSetter={setNewTitle} linkSetter={setNewLink}
+        categoriesSetter={setNewCategories} complexitySetter={setNewComplexity}
+        descriptionSetter={setNewDescription} submitHandler={submitHandler}
       />
       <ViewDescriptionModal
-        isVisible={viewModalIsVisible}
-        title={qn.title}
-        category={qn.category}
-        complexity={qn.complexity}
-        description={qn.description}
-        closeHandler={closeViewModal}
+        isVisible={viewModalIsVisible} title={qn.title}
+        category={qn.category} complexity={qn.complexity}
+        description={qn.description} closeHandler={closeViewModal}
       />
       <div style={{ width: '50%' }}>
         <div id='button-container'>
