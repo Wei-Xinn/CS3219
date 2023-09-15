@@ -10,7 +10,7 @@ enum Complexity {
   "Hard"
 }
 
-interface questionString {
+interface QuestionString {
   id: string,
   title: string,
   complexity: string,
@@ -56,5 +56,5 @@ class Question {
 }
 
 export { Question, Category, Complexity };
-export type { questionString };
+export type { QuestionString };
 

@@ -1,23 +1,19 @@
-import { questionString } from "./Question";
+import { QuestionString } from "./Question";
 
 class QuestionValidator {
-  public validate(input: questionString) {
+  public validateEmptyFields(input: QuestionString) {
     // check for empty fields
     if (!input.title) {
-      console.log('Title cannot be empty');
-      return false;
+      throw new Error('Title cannot be empty')
     }
     if (!input.categories) {
-      console.log('Categories cannot be empty');
-      return false;
+      throw new Error('Categories cannot be empty')
     }
     if (!input.complexity) {
-      console.log('Complexity cannot be empty');
-      return false;
+      throw new Error('Complexity cannot be empty')
     }
     if (!input.link) {
-      console.log('Link cannot be empty');
-      return false
+      throw new Error('Link cannot be empty')
     }
     return true;
   }
