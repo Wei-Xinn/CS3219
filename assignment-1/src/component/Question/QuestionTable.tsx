@@ -1,10 +1,13 @@
-import { Question, questionString } from "../../model/Question";
+import { Question } from "../../model/Question";
+import { QuestionString } from "../../model/Question";
 import { useEffect, useState } from "react";
 import './QuestionTable.css'
 
 interface Props {
-  data: questionString[]
+  data: QuestionString[]
+  isDeleting: boolean
   viewDescriptionHandler: (id: string) => void;
+  deleteHandler: (id: string) => void;
 }
 
 const headerCell = (label: string) => {
@@ -15,15 +18,17 @@ const bodyCell = (value: string) => {
   return <td className="question-td">{value}</td>
 }
 
-const QuestionTable: React.FC<Props> = ({ data, viewDescriptionHandler }) => {
+const QuestionTable: React.FC<Props> = ({ data, viewDescriptionHandler, isDeleting, deleteHandler }) => {
   const [questionsList, setQuestionsList] = useState<Question[]>([]);
 
   useEffect(() => {
-    const qnArr = data.map((i: questionString) =>
+    const qnArr = data.map((i: QuestionString) =>
       new Question(parseInt(i.id), i.title, i.categories,
         i.complexity, i.link, i.description));
     setQuestionsList(qnArr);
   }, [data])
+
+  const b = false;
 
   return (
     <div id='question-table-container'>
@@ -38,7 +43,16 @@ const QuestionTable: React.FC<Props> = ({ data, viewDescriptionHandler }) => {
           </tr>
           {questionsList.map((qn: Question, key: number) => {
             return (
-              <tr className="question-tr" key={qn.id.toString()} onClick={(e) => viewDescriptionHandler(qn.id.toString())}>
+              <tr className={isDeleting ? "question-tr" : ''} key={qn.id.toString()}
+                onClick={
+                  (e) => {
+                    if (isDeleting) {
+                      deleteHandler(qn.id.toString());
+                    } else {
+                      viewDescriptionHandler(qn.id.toString())
+                    }
+                  }
+                }>
                 {bodyCell(qn.id.toString())}
                 {bodyCell(qn.title)}
                 {bodyCell(qn.getCategoriesString())}

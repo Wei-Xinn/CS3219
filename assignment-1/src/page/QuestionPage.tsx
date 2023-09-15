@@ -4,63 +4,55 @@ import QuestionTable from '../component/Question/QuestionTable';
 import { questionSet } from '../MockData';
 import { Button } from '@mui/material';
 import AddQuestionModal from '../component/Question/AddQuestionModal/AddQuestionModal';
-import { questionString } from '../model/Question';
-import QuestionValidator from '../model/QuestionValidator';
+import { QuestionString } from '../model/Question';
 import ViewDescriptionModal from '../component/Question/ViewDescriptionModal/ViewDescriptionModal';
 import LocalStorageHandler from '../handler/LocalStorageHandler';
+import QuestionStringBuilder from '../model/QuestionStringBuilder';
+
+let qn = { title: '', category: '', complexity: '', description: '' };
 
 const QuestionPage = () => {
 
   const [addModalIsVisible, setAddModalIsVisible] = useState(false);
   const [viewModalIsVisible, setViewModalIsVisible] = useState(false);
-  const [questions, setQuestions] = useState<questionString[]>([]);
+  const [questions, setQuestions] = useState<QuestionString[]>([]);
   const [newTitle, setNewTitle] = useState('');
   const [newCategories, setNewCategories] = useState('');
   const [newComplexity, setNewComplexity] = useState('');
   const [newDescription, setNewDescription] = useState('');
   const [newLink, setNewLink] = useState('');
   const [currentQuestionId, setCurrentQuestionId] = useState('0');
-
-  function openAddModal() {
-    setAddModalIsVisible(true);
-  }
-
-  function closeAddModal() {
-    setAddModalIsVisible(false);
-  }
+  const [isDeleting, setIsDeleting] = useState(false);
 
   function closeViewModal() {
     setViewModalIsVisible(false);
   }
 
   function submitHandler() {
-    const newQnStr = {
-      id: '3',
-      title: newTitle,
-      complexity: newComplexity,
-      categories: newCategories,
-      link: newLink,
-      description: newDescription
-    };
+    let builder = new QuestionStringBuilder();
+    builder.setId(LocalStorageHandler.getNextQuestionId()); //TODO get ID from mongodb
+    builder.setTitle(newTitle);
+    builder.setComplexity(newComplexity);
+    builder.setCategories(newCategories);
+    builder.setLink(newLink);
+    builder.setDescription(newDescription);
 
-    // Invalid question string guard clause
-    let validator = new QuestionValidator();
-    if (!validator.validate(newQnStr)) {
+    let newArr = questions;
+    try {
+      newArr = [...questions, builder.build()];
+      setQuestions(newArr);
+      setAddModalIsVisible(false);
+      LocalStorageHandler.saveQuestion(newArr);
+    } catch (e) {
+      console.log(e);
       return;
     }
-    const newArr = [...questions, newQnStr];
-    setQuestions(newArr);
-    setAddModalIsVisible(false);
-    LocalStorageHandler.saveQuestion(newArr);
-    console.log(newArr);
-    console.log(LocalStorageHandler.loadQuestion());
+
   }
 
   useEffect(() => {
-    console.log(LocalStorageHandler.loadQuestion());
     if (Object.keys(LocalStorageHandler.loadQuestion()).length === 0) {
       setQuestions(questionSet);
-      console.log('Loading mock questions')
       return;
     }
     setQuestions(LocalStorageHandler.loadQuestion());
@@ -71,18 +63,18 @@ const QuestionPage = () => {
     setViewModalIsVisible(true);
   }
 
-  let qn = { title: '', category: '', complexity: '', description: '' };
-  if (questions.filter(i => i.id === currentQuestionId)[0] !== undefined) {
-    qn.title = (questions.filter(i => i.id === currentQuestionId)[0].title);
-    qn.category = (questions.filter(i => i.id === currentQuestionId)[0].categories);
-    qn.complexity = (questions.filter(i => i.id === currentQuestionId)[0].complexity);
-    qn.description = (questions.filter(i => i.id === currentQuestionId)[0].description);
+  const selectedQuestion = questions.filter(i => i.id === currentQuestionId)[0];
+  if (selectedQuestion !== undefined) {
+    qn.title = (selectedQuestion.title);
+    qn.category = (selectedQuestion.categories);
+    qn.complexity = (selectedQuestion.complexity);
+    qn.description = (selectedQuestion.description);
   }
 
   return (
     <div id='question-page-container'>
       <AddQuestionModal
-        isVisible={addModalIsVisible} closeHandler={closeAddModal}
+        isVisible={addModalIsVisible} closeHandler={() => setAddModalIsVisible(false)}
         titleSetter={setNewTitle} linkSetter={setNewLink}
         categoriesSetter={setNewCategories} complexitySetter={setNewComplexity}
         descriptionSetter={setNewDescription} submitHandler={submitHandler}
@@ -94,10 +86,22 @@ const QuestionPage = () => {
       />
       <div style={{ width: '50%' }}>
         <div id='button-container'>
-          <Button id='add-btn' variant='contained' onClick={openAddModal}>Add</Button>
-          <Button id='delete-btn' variant='contained' color='error'>Delete</Button>
+          <Button id='add-btn' variant='contained' onClick={() => setAddModalIsVisible(true)}>
+            Add
+          </Button>
+          <Button id='delete-btn' variant='contained' color='error'
+            onClick={() => setIsDeleting(!isDeleting)}>
+            Delete
+          </Button>
         </div>
-        <QuestionTable data={questions} viewDescriptionHandler={viewDescriptionHandler} />
+        <QuestionTable
+          data={questions}
+          viewDescriptionHandler={viewDescriptionHandler}
+          deleteHandler={(id: string) => {
+            setQuestions(questions.filter(i => i.id !== id));
+            LocalStorageHandler.saveQuestion(questions.filter(i => i.id !== id));
+          }}
+          isDeleting={isDeleting} />
       </div>
     </div>
 

@@ -22,6 +22,10 @@
   padding: 5px;
 }
 
+.question-tr:hover {
+  background-color: red;
+}
+
 /* .question-tr:nth-child(even) {
   background-color: #212224;
 } */
